@@ -2,8 +2,8 @@ package com.solvd.micro9.tickets.web.controller;
 
 import com.solvd.micro9.tickets.domain.Event;
 import com.solvd.micro9.tickets.service.EventService;
-import com.solvd.micro9.tickets.web.mapper.EventMapper;
 import com.solvd.micro9.tickets.web.dto.EventDto;
+import com.solvd.micro9.tickets.web.mapper.EventMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
