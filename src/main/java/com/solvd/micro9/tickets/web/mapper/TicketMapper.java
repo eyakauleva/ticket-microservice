@@ -13,4 +13,6 @@ public interface TicketMapper {
 
     List<TicketDto> domainToDto(List<Ticket> tickets);
 
+    Ticket dtoToDomain(TicketDto ticketDto);
+
 }
