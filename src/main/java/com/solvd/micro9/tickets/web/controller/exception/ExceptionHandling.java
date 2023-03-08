@@ -1,8 +1,10 @@
 package com.solvd.micro9.tickets.web.controller.exception;
 
 import com.solvd.micro9.tickets.domain.exception.ResourceDoesNotExistException;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Mono;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 public class ExceptionHandling {
 
     @ExceptionHandler(WebExchangeBindException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Mono<ExceptionBody> handleException(WebExchangeBindException ex) {
         List<BindingError> bindingErrors = ex.getBindingResult()
                 .getAllErrors()
@@ -26,6 +29,7 @@ public class ExceptionHandling {
     }
 
     @ExceptionHandler(ResourceDoesNotExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Mono<ExceptionBody> ResourceDoesNotExistException(ResourceDoesNotExistException ex) {
         return Mono.just(new ExceptionBody(ex.getMessage()));
     }
