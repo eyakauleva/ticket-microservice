@@ -19,7 +19,7 @@ public class TicketController {
     private final TicketMapper ticketMapper;
 
     @PostMapping
-    public Mono<TicketDto> create(@RequestBody @Validated TicketDto ticketDto) {
+    public Mono<TicketDto> create(@Validated @RequestBody TicketDto ticketDto) {
         Ticket ticket = ticketMapper.dtoToDomain(ticketDto);
         Mono<Ticket> ticketMono = ticketService.create(ticket);
         return ticketMapper.domainToDto(ticketMono);

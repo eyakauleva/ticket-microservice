@@ -8,7 +8,6 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Table(name = "events")
 @Data
@@ -23,6 +22,5 @@ public class Event {
     private TicketCategory category;
     private LocalDateTime eventTime;
     private BigDecimal price;
-    private Set<Ticket> tickets;
 
 }

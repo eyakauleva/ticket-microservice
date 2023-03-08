@@ -1,6 +1,8 @@
 package com.solvd.micro9.tickets.service.impl;
 
 import com.solvd.micro9.tickets.domain.Ticket;
+import com.solvd.micro9.tickets.domain.exception.ResourceDoesNotExistException;
+import com.solvd.micro9.tickets.persistence.EventRepository;
 import com.solvd.micro9.tickets.persistence.TicketRepository;
 import com.solvd.micro9.tickets.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +16,17 @@ import reactor.core.publisher.Mono;
 public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
+    private final EventRepository eventRepository;
 
     @Transactional
     public Mono<Ticket> create(Ticket ticket) {
-        return ticketRepository.save(ticket);
+        return eventRepository.findById(ticket.getEventId())
+                .switchIfEmpty(Mono.error(new ResourceDoesNotExistException("Event [id=" + ticket.getEventId() + "] does not exist")))
+                .zipWith(ticketRepository.save(ticket))
+                .map(result -> {
+                    result.getT2().setEvent(result.getT1());
+                    return result.getT2();
+                });
     }
 
     @Override
