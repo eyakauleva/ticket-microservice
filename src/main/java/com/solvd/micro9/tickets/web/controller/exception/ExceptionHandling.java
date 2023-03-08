@@ -5,6 +5,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 public class ExceptionHandling {
 
     @ExceptionHandler(WebExchangeBindException.class)
-    public ExceptionBody handleException(WebExchangeBindException ex) {
+    public Mono<ExceptionBody> handleException(WebExchangeBindException ex) {
         List<BindingError> bindingErrors = ex.getBindingResult()
                 .getAllErrors()
                 .stream()
@@ -21,12 +22,12 @@ public class ExceptionHandling {
                         new BindingError(
                                 fieldError.getObjectName() + "." + ((FieldError) fieldError).getField(), fieldError.getDefaultMessage()))
                 .collect(Collectors.toList());
-        return new ExceptionBody("Binding errors", bindingErrors);
+        return Mono.just(new ExceptionBody("Binding errors", bindingErrors));
     }
 
     @ExceptionHandler(ResourceDoesNotExistException.class)
-    public ExceptionBody ResourceDoesNotExistException(ResourceDoesNotExistException ex) {
-        return new ExceptionBody(ex.getMessage());
+    public Mono<ExceptionBody> ResourceDoesNotExistException(ResourceDoesNotExistException ex) {
+        return Mono.just(new ExceptionBody(ex.getMessage()));
     }
 
 }
