@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/api/v1/events")
@@ -21,15 +20,15 @@ public class EventController {
     private final EventMapper eventMapper;
 
     @GetMapping
-    public List<EventDto> getAll() {
-        List<Event> events = eventService.getAll();
-        return eventMapper.domainToDto(events);
+    public Flux<EventDto> getAll() {
+        Flux<Event> eventFlux = eventService.getAll();
+        return eventMapper.domainToDto(eventFlux);
     }
 
-    @GetMapping(value = "/{userId}")
-    public List<EventDto> findByUserId(@PathVariable(name = "userId") Long userId) {
-        List<Event> events = eventService.findByUserId(userId);
-        return eventMapper.domainToDto(events);
+    @GetMapping(value = "/user/{userId}")
+    public Flux<EventDto> findByUserId(@PathVariable(name = "userId") Long userId) {
+        Flux<Event> eventFlux = eventService.findByUserId(userId);
+        return eventMapper.domainToDto(eventFlux);
     }
 
 }

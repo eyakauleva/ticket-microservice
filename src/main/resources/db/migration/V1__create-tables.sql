@@ -1,6 +1,3 @@
---liquibase formatted sql
-
---changeset eyakauleva:create_tables
 
 create table events
 (
@@ -22,6 +19,3 @@ create table tickets(
 	primary key (id),
 	foreign key (event_id) references events (id) on update cascade on delete set null
 );
-
---rollback drop table tickets;
---  drop table events;

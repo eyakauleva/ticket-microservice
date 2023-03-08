@@ -1,13 +1,12 @@
 package com.solvd.micro9.tickets.service;
 
 import com.solvd.micro9.tickets.domain.Event;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 public interface EventService {
 
-    List<Event> getAll();
+    Flux<Event> getAll();
 
-    List<Event> findByUserId(Long userId);
+    Flux<Event> findByUserId(Long userId);
 
 }

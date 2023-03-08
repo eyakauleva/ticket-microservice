@@ -1,6 +1,4 @@
 
---changeset eyakauleva:insert_initial_data
-
 insert into events(name, description, category, event_time, price)
 	values('Imagine Dragons 2023', 'Imagine Dragons concert in Minsk', 'CONCERT',
                     '2023-03-10 19:00', 100.00);
@@ -23,7 +21,3 @@ insert into tickets(user_id, event_id, quantity, price) values(2, 1, 2, 200.00);
 insert into tickets(user_id, event_id, quantity, price) values(2, 2, 2, 45.00);
 insert into tickets(user_id, event_id, quantity, price) values(3, 3, 1, 150.34);
 insert into tickets(user_id, event_id, quantity, price) values(3, 4, 3, 465.00);
-
-
---rollback delete from tickets where id>0;
---  delete from events where id>0;
