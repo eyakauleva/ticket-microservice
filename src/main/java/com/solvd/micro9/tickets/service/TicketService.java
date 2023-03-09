@@ -1,13 +1,13 @@
 package com.solvd.micro9.tickets.service;
 
 import com.solvd.micro9.tickets.domain.Ticket;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface TicketService {
 
-    Ticket create(Ticket ticket);
+    Mono<Ticket> create(Ticket ticket);
 
-    List<Ticket> getAll();
+    Flux<Ticket> getAll();
 
 }

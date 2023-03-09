@@ -1,28 +1,36 @@
 package com.solvd.micro9.tickets.service.impl;
 
 import com.solvd.micro9.tickets.domain.Ticket;
+import com.solvd.micro9.tickets.domain.exception.ResourceDoesNotExistException;
+import com.solvd.micro9.tickets.persistence.EventRepository;
 import com.solvd.micro9.tickets.persistence.TicketRepository;
 import com.solvd.micro9.tickets.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
+    private final EventRepository eventRepository;
 
     @Transactional
-    public Ticket create(Ticket ticket){
-        ticketRepository.save(ticket);
-        return ticket;
+    public Mono<Ticket> create(Ticket ticket) {
+        return eventRepository.findById(ticket.getEventId())
+                .switchIfEmpty(Mono.error(new ResourceDoesNotExistException("Event [id=" + ticket.getEventId() + "] does not exist")))
+                .zipWith(ticketRepository.save(ticket))
+                .map(result -> {
+                    result.getT2().setEvent(result.getT1());
+                    return result.getT2();
+                });
     }
 
     @Override
-    public List<Ticket> getAll() {
+    public Flux<Ticket> getAll() {
         return ticketRepository.findAll();
     }
 

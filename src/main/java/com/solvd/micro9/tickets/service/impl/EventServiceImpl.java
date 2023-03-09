@@ -7,9 +7,7 @@ import com.solvd.micro9.tickets.persistence.TicketRepository;
 import com.solvd.micro9.tickets.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import reactor.core.publisher.Flux;
 
 @Service
 @RequiredArgsConstructor
@@ -18,15 +16,13 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final TicketRepository ticketRepository;
 
-    public List<Event> getAll() {
+    public Flux<Event> getAll() {
         return eventRepository.findAll();
     }
 
-    public List<Event> findByUserId(Long userId) {
-        List<Ticket> userTickets = ticketRepository.findByUserId(userId);
-        return userTickets.stream()
-                .map(ticket -> eventRepository.findById(ticket.getId()).get())
-                .collect(Collectors.toList());
+    public Flux<Event> findByUserId(Long userId) {
+        Flux<Ticket> ticketFlux = ticketRepository.findByUserId(userId);
+        return ticketFlux.flatMap(ticket -> eventRepository.findById(ticket.getId()));
     }
 
 }

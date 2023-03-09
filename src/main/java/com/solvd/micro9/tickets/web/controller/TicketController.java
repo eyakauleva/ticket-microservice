@@ -7,8 +7,8 @@ import com.solvd.micro9.tickets.web.mapper.TicketMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/v1/tickets")
@@ -19,15 +19,15 @@ public class TicketController {
     private final TicketMapper ticketMapper;
 
     @PostMapping
-    public TicketDto create(@RequestBody @Validated TicketDto ticketDto) {
+    public Mono<TicketDto> create(@Validated @RequestBody TicketDto ticketDto) {
         Ticket ticket = ticketMapper.dtoToDomain(ticketDto);
-        ticket = ticketService.create(ticket);
-        return ticketMapper.domainToDto(ticket);
+        Mono<Ticket> ticketMono = ticketService.create(ticket);
+        return ticketMapper.domainToDto(ticketMono);
     }
 
     @GetMapping
-    public List<TicketDto> getAll() {
-        List<Ticket> tickets = ticketService.getAll();
+    public Flux<TicketDto> getAll() {
+        Flux<Ticket> tickets = ticketService.getAll();
         return ticketMapper.domainToDto(tickets);
     }
 
