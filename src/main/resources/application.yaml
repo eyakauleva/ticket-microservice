@@ -2,6 +2,13 @@ server:
   port:
     9090
 
+logging:
+  level:
+    com.solvd.micro: DEBUG
+  file:
+    name: ticket-service.log
+    path: /
+
 spring:
   config:
     import: .env[.properties]
@@ -14,6 +21,18 @@ spring:
     default-property-inclusion: non_null
   application:
     name: TICKET-SERVICE
+  kafka:
+    topic: users
+    bootstrap-servers: localhost:9092
+    properties:
+      spring:
+        json:
+          trusted:
+            packages: com.solvd.micro9.tickets.web.dto
+    consumer:
+      group-id: userGroup
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
 eureka:
   client:
