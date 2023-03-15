@@ -34,4 +34,10 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.findAll();
     }
 
+    @Override
+    public void updateDeletedUserTickets(Long userId) {
+        ticketRepository.updateDeletedUserTickets(userId)
+                .subscribe();
+    }
+
 }

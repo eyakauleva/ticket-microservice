@@ -10,4 +10,6 @@ public interface TicketService {
 
     Flux<Ticket> getAll();
 
+    void updateDeletedUserTickets(Long userId);
+
 }
