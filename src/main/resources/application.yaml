@@ -23,7 +23,7 @@ spring:
     name: TICKET-SERVICE
   kafka:
     topic: users
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}:9092
     properties:
       spring:
         json:
