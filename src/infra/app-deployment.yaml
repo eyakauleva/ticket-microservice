@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tickets-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tickets
+  template:
+    metadata:
+      labels:
+        app: tickets
+    spec:
+      containers:
+        - name: tickets-app
+          image: eyakauleva/ticket-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9090
+          env:
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: tickets-configmap
+                  key: POSTGRES_PORT
+            - name: POSTGRES_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: tickets-configmap
+                  key: POSTGRES_DOMAIN
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-secrets-tickets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-secrets-tickets
+                  key: POSTGRES_PASSWORD
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: tickets-configmap
+                  key: KAFKA_BOOTSTRAP_SERVERS
