@@ -14,7 +14,7 @@ spring:
     import: optional:file:.env[.properties]
   data:
     mongodb:
-      uri: mongodb://root:system@${MONGODB_DOMAIN}:27017/tickets?authSource=admin
+      uri: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_DOMAIN}:27017/tickets?authSource=admin
 #      username: ${MONGODB_USER}
 #      password: ${MONGODB_PASSWORD}
 #      authentication-database: admin
