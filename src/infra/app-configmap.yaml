@@ -3,7 +3,5 @@ kind: ConfigMap
 metadata:
   name: tickets-configmap
 data:
-  POSTGRES_DOMAIN: pg-service-tickets
   MONGODB_DOMAIN: mongodb-service-tickets
-  POSTGRES_PORT: '5432'
   KAFKA_BOOTSTRAP_SERVERS: kafka-service
