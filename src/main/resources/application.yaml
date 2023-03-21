@@ -14,14 +14,14 @@ spring:
     import: optional:file:.env[.properties]
   data:
     mongodb:
-#      uri: mongodb://mongodb-service-tickets:27017/tickets
-#      username: ${MONGODB_USER}
-#      password: ${MONGODB_PASSWORD}
-      host: ${MONGODB_DOMAIN}
-      database: admin
-      port: 27017
+      uri: mongodb://${MONGODB_DOMAIN}:27017/tickets
       username: ${MONGODB_USER}
       password: ${MONGODB_PASSWORD}
+#      host: ${MONGODB_DOMAIN}
+#      database: admin
+#      port: 27017
+#      username: ${MONGODB_USER}
+#      password: ${MONGODB_PASSWORD}
   jackson:
     default-property-inclusion: non_null
   application:
