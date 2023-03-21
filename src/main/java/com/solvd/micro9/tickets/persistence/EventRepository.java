@@ -1,9 +1,9 @@
 package com.solvd.micro9.tickets.persistence;
 
 import com.solvd.micro9.tickets.domain.Event;
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface EventRepository extends R2dbcRepository<Event, Long> {
+public interface EventRepository extends ReactiveMongoRepository<Event, Long> {
 }

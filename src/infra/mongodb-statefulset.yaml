@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-stateful-tickets
+spec:
+  serviceName: mongodb-service-tickets
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-tickets
+  template:
+    metadata:
+      labels:
+        app: mongodb-tickets
+    spec:
+      containers:
+        - name: tickets-service-mongodb
+          image: mongo:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secrets-tickets
+                  key: MONGODB_USER
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secrets-tickets
+                  key: MONGODB_PASSWORD
+      volumes:
+        - name: tickets-service-db
+          hostPath:
+            path: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: tickets-service-db
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: 1Gi
+
