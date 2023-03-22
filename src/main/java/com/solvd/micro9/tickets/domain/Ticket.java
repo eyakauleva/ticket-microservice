@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
@@ -27,10 +28,11 @@ public class Ticket {
     @Field(name = "user_id")
     private Long userId;
 
-    @Field("event_id")
-    private Long eventId;
+//    @Field("event_id")
+//    private Long eventId;
 
-    @Transient
+    //@Transient
+    @DocumentReference
     private Event event;
 
     private Integer quantity;
