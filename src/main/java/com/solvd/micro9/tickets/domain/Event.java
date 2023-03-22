@@ -6,10 +6,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document(collection = "events")
 @Data
@@ -33,5 +35,8 @@ public class Event {
     private LocalDateTime eventTime;
 
     private BigDecimal price;
+
+    @DocumentReference
+    private List<Ticket> tickets;
 
 }

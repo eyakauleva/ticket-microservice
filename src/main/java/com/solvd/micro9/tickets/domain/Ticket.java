@@ -33,7 +33,8 @@ public class Ticket {
 //    private Long eventId;
 
     //@Transient
-    @DocumentReference(lookup = "{'id' : ?#{id}, 'name' : ?#{name} }")
+//    @DocumentReference(lookup = "{'id' : ?#{id}, 'name' : ?#{name} }")
+    @DocumentReference
     private Event event;
 
     private Integer quantity;
