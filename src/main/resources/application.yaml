@@ -14,15 +14,7 @@ spring:
     import: optional:file:.env[.properties]
   data:
     mongodb:
-      uri: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_DOMAIN}:27017/tickets?authSource=admin
-#      username: ${MONGODB_USER}
-#      password: ${MONGODB_PASSWORD}
-#      authentication-database: admin
-#      host: ${MONGODB_DOMAIN}
-#      database: admin
-#      port: 27017
-#      username: ${MONGODB_USER}
-#      password: ${MONGODB_PASSWORD}
+      uri: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_DOMAIN}:27017/tickets #?authSource=admin
   jackson:
     default-property-inclusion: non_null
   application:
