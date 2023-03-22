@@ -4,6 +4,7 @@ import com.solvd.micro9.tickets.domain.Event;
 import com.solvd.micro9.tickets.service.EventService;
 import com.solvd.micro9.tickets.web.dto.EventDto;
 import com.solvd.micro9.tickets.web.mapper.EventMapper;
+import com.solvd.micro9.tickets.web.validation.CreateEventGroup;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class EventController {
     private final EventMapper eventMapper;
 
     @PostMapping
-    public Mono<EventDto> create(@Validated @RequestBody EventDto eventDto) {
+    public Mono<EventDto> create(@Validated(CreateEventGroup.class) @RequestBody EventDto eventDto) {
         Event event = eventMapper.dtoToDomain(eventDto);
         Mono<Event> eventMono = eventService.create(event);
         return eventMapper.domainToDto(eventMono);
