@@ -1,6 +1,6 @@
 package com.solvd.micro9.tickets.web.dto;
 
-import com.solvd.micro9.tickets.domain.TicketCategory;
+import com.solvd.micro9.tickets.domain.EventCategory;
 import com.solvd.micro9.tickets.web.validation.CreateEventGroup;
 import com.solvd.micro9.tickets.web.validation.CreateTicketGroup;
 import jakarta.validation.constraints.NotNull;
@@ -24,7 +24,7 @@ public class EventDto {
     private String description;
 
     @NotNull(groups = CreateEventGroup.class, message = "Event's category must be set")
-    private TicketCategory category;
+    private EventCategory category;
 
     @NotNull(groups = CreateEventGroup.class, message = "Event's date and time must be set")
     private LocalDateTime eventTime;

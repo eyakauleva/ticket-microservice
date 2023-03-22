@@ -1,6 +1,7 @@
 package com.solvd.micro9.tickets.web.controller.exception;
 
 import com.solvd.micro9.tickets.domain.exception.ResourceDoesNotExistException;
+import com.solvd.micro9.tickets.domain.exception.ServerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,7 +31,13 @@ public class ExceptionHandling {
 
     @ExceptionHandler(ResourceDoesNotExistException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Mono<ExceptionBody> ResourceDoesNotExistException(ResourceDoesNotExistException ex) {
+    public Mono<ExceptionBody> handleResourceDoesNotExistException(ResourceDoesNotExistException ex) {
+        return Mono.just(new ExceptionBody(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ServerException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Mono<ExceptionBody> handleServerException(ServerException ex) {
         return Mono.just(new ExceptionBody(ex.getMessage()));
     }
 
