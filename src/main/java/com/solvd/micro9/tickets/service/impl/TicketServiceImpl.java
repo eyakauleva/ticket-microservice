@@ -34,7 +34,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Flux<Ticket> getAll() {
         Flux<Ticket> ticketFlux = ticketRepository.findAll();
-        log.info("ticket:{}",ticketFlux);
+        ticketFlux.subscribe( ticket -> log.info("tickets:{}", ticket), error -> log.error("error!", error));
         return ticketFlux;
     }
 
