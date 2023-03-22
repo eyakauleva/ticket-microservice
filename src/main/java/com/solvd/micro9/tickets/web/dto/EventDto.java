@@ -15,14 +15,19 @@ public class EventDto {
     @NotNull(message = "Event's id must be set")
     private Long id;
 
+    @NotNull(message = "Event's name must be set")
     private String name;
 
+    @NotNull(message = "Event's description must be set")
     private String description;
 
+    @NotNull(message = "Event's category must be set")
     private TicketCategory category;
 
+    @NotNull(message = "Event's date and time must be set")
     private LocalDateTime eventTime;
 
+    @NotNull(message = "Event's price must be set")
     private BigDecimal price;
 
 }

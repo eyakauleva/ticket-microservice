@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Document
+@Document(collection = "events")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
