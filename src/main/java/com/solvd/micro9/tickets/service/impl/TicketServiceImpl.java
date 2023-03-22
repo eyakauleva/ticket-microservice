@@ -1,5 +1,6 @@
 package com.solvd.micro9.tickets.service.impl;
 
+import com.solvd.micro9.tickets.domain.Event;
 import com.solvd.micro9.tickets.domain.Ticket;
 import com.solvd.micro9.tickets.domain.exception.ResourceDoesNotExistException;
 import com.solvd.micro9.tickets.persistence.EventRepository;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,8 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Flux<Ticket> getAll() {
         Flux<Ticket> ticketFlux = ticketRepository.findAll();
+        ticketFlux.subscribe(ticket -> ticket.setPrice(BigDecimal.valueOf(999.99)));
+
         ticketFlux.subscribe( ticket -> log.info("tickets:{}", ticket), error -> log.error("error!", error));
         return ticketFlux;
     }
