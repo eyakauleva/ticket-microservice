@@ -28,7 +28,7 @@ public class Ticket {
     @Field(name = "user_id")
     private Long userId;
 
-    @DocumentReference
+    @DocumentReference(lookup="{'ticket':?#{#self._id} }")
     private Event event;
 
     private Integer quantity;
