@@ -6,6 +6,7 @@ import com.solvd.micro9.tickets.persistence.EventRepository;
 import com.solvd.micro9.tickets.persistence.TicketRepository;
 import com.solvd.micro9.tickets.service.TicketService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -13,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
@@ -31,7 +33,9 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Flux<Ticket> getAll() {
-        return ticketRepository.findAll();
+        Flux<Ticket> ticketFlux = ticketRepository.findAll();
+        log.info("ticket:{}",ticketFlux);
+        return ticketFlux;
     }
 
     @Override
