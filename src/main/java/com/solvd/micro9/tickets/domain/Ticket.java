@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
 
@@ -17,16 +18,17 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class Ticket {
 
+    @Transient
+    public static final String SEQUENCE_NAME = "ticket_sequence";
+
     @Id
     private Long id;
 
     @Indexed
+    @Field(name = "user_id")
     private Long userId;
 
     @DBRef
-    private Long eventId;
-
-    @Transient
     private Event event;
 
     private Integer quantity;
