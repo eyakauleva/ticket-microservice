@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @Mapper(componentModel = "spring", uses = {EventMapper.class})
 public interface TicketMapper {
 
-    //@Mapping(source = "eventId", target = "event", qualifiedByName = "setEvent")
+    @Mapping(source = "eventId", target = "event", qualifiedByName = "setEvent")
     TicketDto domainToDto(Ticket ticket);
 
     default Mono<TicketDto> domainToDto(Mono<Ticket> ticketMono) {
@@ -23,7 +23,7 @@ public interface TicketMapper {
         return ticketFlux.map(this::domainToDto);
     }
 
-    //@Mapping(source = "event", target = "eventId", qualifiedByName = "getEventId")
+    @Mapping(source = "event", target = "eventId", qualifiedByName = "getEventId")
     Ticket dtoToDomain(TicketDto ticketDto);
 
     @Named("getEventId")

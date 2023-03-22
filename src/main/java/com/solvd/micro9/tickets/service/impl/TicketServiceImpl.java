@@ -37,9 +37,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Flux<Ticket> getAll() {
         Flux<Ticket> ticketFlux = ticketRepository.findAll();
-        ticketFlux.subscribe(ticket -> ticket.setPrice(BigDecimal.valueOf(999.99)));
-
-        ticketFlux.subscribe( ticket -> log.info("tickets:{}", ticket), error -> log.error("error!", error));
+        //ticketFlux.subscribe( ticket -> log.info("tickets:{}", ticket), error -> log.error("error!", error));
         return ticketFlux;
     }
 

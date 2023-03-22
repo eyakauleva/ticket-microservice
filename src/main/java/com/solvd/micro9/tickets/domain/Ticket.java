@@ -28,13 +28,12 @@ public class Ticket {
     @Field(name = "user_id")
     private Long userId;
 
-//    @Field("event_id")
-//    @DocumentReference
-//    private Long eventId;
+    @Field("event_id")
+    private Long eventId;
 
-    //@Transient
+    @Transient
 //    @DocumentReference(lookup = "{'id' : ?#{id}, 'name' : ?#{name} }")
-    @DocumentReference(lookup = "{'id' : ?#{self._id}, 'name' : ?#{self._name} }")
+//    @DocumentReference(lookup = "{'id' : ?#{self._id}, 'name' : ?#{self._name} }")
     private Event event;
 
     private Integer quantity;
