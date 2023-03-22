@@ -28,11 +28,11 @@ public class Ticket {
     @Field(name = "user_id")
     private Long userId;
 
-//    @Field("event_id")
-//    private Long eventId;
-
-    //@Transient
+    @Field("event_id")
     @DocumentReference
+    private Long eventId;
+
+    @Transient
     private Event event;
 
     private Integer quantity;
