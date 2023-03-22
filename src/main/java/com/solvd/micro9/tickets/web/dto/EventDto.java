@@ -32,4 +32,8 @@ public class EventDto {
     @NotNull(groups = CreateEventGroup.class, message = "Event's price must be set")
     private BigDecimal price;
 
+    public EventDto(Long id) {
+        this.id = id;
+    }
+
 }
