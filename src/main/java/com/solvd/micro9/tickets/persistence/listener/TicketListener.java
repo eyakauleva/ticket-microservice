@@ -1,4 +1,4 @@
-package com.solvd.micro9.tickets.persistence;
+package com.solvd.micro9.tickets.persistence.listener;
 
 import com.solvd.micro9.tickets.domain.Ticket;
 import com.solvd.micro9.tickets.domain.exception.ServerException;
@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class TicketModelListener extends AbstractMongoEventListener<Ticket> {
+public class TicketListener extends AbstractMongoEventListener<Ticket> {
 
     private final SequenceGeneratorService sequenceGenerator;
 

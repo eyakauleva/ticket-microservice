@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 @Mapper(componentModel = "spring", uses = {EventMapper.class})
 public interface TicketMapper {
 
-    @Mapping(source = "eventId", target = "event", qualifiedByName = "setEvent")
     TicketDto domainToDto(Ticket ticket);
 
     default Mono<TicketDto> domainToDto(Mono<Ticket> ticketMono) {
@@ -29,11 +28,6 @@ public interface TicketMapper {
     @Named("getEventId")
     static Long getEventId(EventDto event) {
         return event.getId();
-    }
-
-    @Named("setEvent")
-    static EventDto getEventId(Long eventId) {
-        return new EventDto(eventId);
     }
 
 }
