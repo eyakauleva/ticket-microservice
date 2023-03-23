@@ -21,7 +21,12 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public Mono<Ticket> create(Ticket ticket) {
         return eventRepository.findById(ticket.getEvent().getId())
-                .switchIfEmpty(Mono.error(new ResourceDoesNotExistException("Event [id=" + ticket.getEvent().getId() + "] does not exist")))
+                .switchIfEmpty(
+                        Mono.error(
+                                new ResourceDoesNotExistException(
+                                        "Event [id=" + ticket.getEvent().getId() + "] does not exist")
+                        )
+                )
                 .zipWith(ticketRepository.save(ticket))
                 .map(result -> {
                     result.getT2().setEvent(result.getT1());
