@@ -12,11 +12,9 @@ logging:
 spring:
   config:
     import: optional:file:.env[.properties]
-  r2dbc:
-    url: r2dbc:postgresql://${POSTGRES_DOMAIN}:${POSTGRES_PORT}/postgres?currentSchema=tickets
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    driver: org.postgresql.Driver
+  data:
+    mongodb:
+      uri: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_DOMAIN}:27017/tickets?authSource=admin
   jackson:
     default-property-inclusion: non_null
   application:

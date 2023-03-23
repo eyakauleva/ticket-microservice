@@ -1,35 +1,35 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: pg-stateful-tickets
+  name: mongodb-stateful-tickets
 spec:
-  serviceName: pg-service-tickets
+  serviceName: mongodb-service-tickets
   replicas: 1
   selector:
     matchLabels:
-      app: postgres-tickets
+      app: mongodb-tickets
   template:
     metadata:
       labels:
-        app: postgres-tickets
+        app: mongodb-tickets
     spec:
       containers:
-        - name: tickets-service-postgres
-          image: postgres:14.6-alpine
+        - name: tickets-service-mongodb
+          image: mongo:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 5432
+            - containerPort: 27017
           env:
-            - name: POSTGRES_USER
+            - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: pg-secrets-tickets
-                  key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD
+                  name: mongodb-secrets-tickets
+                  key: MONGODB_USER
+            - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pg-secrets-tickets
-                  key: POSTGRES_PASSWORD
+                  name: mongodb-secrets-tickets
+                  key: MONGODB_PASSWORD
       volumes:
         - name: tickets-service-db
           hostPath:

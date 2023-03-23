@@ -4,6 +4,7 @@ import com.solvd.micro9.tickets.domain.Ticket;
 import com.solvd.micro9.tickets.service.TicketService;
 import com.solvd.micro9.tickets.web.dto.TicketDto;
 import com.solvd.micro9.tickets.web.mapper.TicketMapper;
+import com.solvd.micro9.tickets.web.validation.CreateTicketGroup;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class TicketController {
     private final TicketMapper ticketMapper;
 
     @PostMapping
-    public Mono<TicketDto> create(@Validated @RequestBody TicketDto ticketDto) {
+    public Mono<TicketDto> create(@Validated(CreateTicketGroup.class) @RequestBody TicketDto ticketDto) {
         Ticket ticket = ticketMapper.dtoToDomain(ticketDto);
         Mono<Ticket> ticketMono = ticketService.create(ticket);
         return ticketMapper.domainToDto(ticketMono);

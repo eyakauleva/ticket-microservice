@@ -4,12 +4,12 @@ import com.solvd.micro9.tickets.domain.Event;
 import com.solvd.micro9.tickets.service.EventService;
 import com.solvd.micro9.tickets.web.dto.EventDto;
 import com.solvd.micro9.tickets.web.mapper.EventMapper;
+import com.solvd.micro9.tickets.web.validation.CreateEventGroup;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/v1/events")
@@ -18,6 +18,13 @@ public class EventController {
 
     private final EventService eventService;
     private final EventMapper eventMapper;
+
+    @PostMapping
+    public Mono<EventDto> create(@Validated(CreateEventGroup.class) @RequestBody EventDto eventDto) {
+        Event event = eventMapper.dtoToDomain(eventDto);
+        Mono<Event> eventMono = eventService.create(event);
+        return eventMapper.domainToDto(eventMono);
+    }
 
     @GetMapping
     public Flux<EventDto> getAll() {

@@ -5,23 +5,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
 
-@Table(name = "tickets")
+@Document(collection = "tickets")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Ticket {
 
+    @Transient
+    public static final String SEQUENCE_NAME = "ticket_sequence";
+
     @Id
     private Long id;
 
+    @Indexed
+    @Field(name = "user_id")
     private Long userId;
 
-    @Column("event_id")
+    @Field("event_id")
     private Long eventId;
 
     @Transient
@@ -30,5 +36,13 @@ public class Ticket {
     private Integer quantity;
 
     private BigDecimal price;
+
+    public Ticket(Long id, Long userId, Long eventId, Integer quantity, BigDecimal price) {
+        this.id = id;
+        this.userId = userId;
+        this.eventId = eventId;
+        this.quantity = quantity;
+        this.price = price;
+    }
 
 }
