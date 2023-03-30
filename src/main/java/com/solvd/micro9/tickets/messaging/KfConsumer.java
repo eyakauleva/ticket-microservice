@@ -1,5 +1,6 @@
 package com.solvd.micro9.tickets.messaging;
 
+import com.solvd.micro9.tickets.domain.command.SetTicketsUserIdToNullByUserIdCommand;
 import com.solvd.micro9.tickets.service.TicketService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,11 @@ public class KfConsumer {
         receiver.receive()
                 .subscribe(record -> {
                     log.info("received message: {}", record);
-                    ticketService.updateDeletedUserTickets(record.value());
+                    SetTicketsUserIdToNullByUserIdCommand command = new SetTicketsUserIdToNullByUserIdCommand(
+                            record.value(),
+                            "Liza123"
+                    );
+                    ticketService.updateDeletedUserTickets(command);
                     record.receiverOffset().acknowledge();
                 });
     }

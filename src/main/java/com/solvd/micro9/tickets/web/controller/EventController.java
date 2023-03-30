@@ -1,6 +1,9 @@
 package com.solvd.micro9.tickets.web.controller;
 
 import com.solvd.micro9.tickets.domain.Event;
+import com.solvd.micro9.tickets.domain.command.CreateEventCommand;
+import com.solvd.micro9.tickets.domain.event.EventStoreEvents;
+import com.solvd.micro9.tickets.domain.query.ListEventQuery;
 import com.solvd.micro9.tickets.service.EventService;
 import com.solvd.micro9.tickets.web.dto.EventDto;
 import com.solvd.micro9.tickets.web.mapper.EventMapper;
@@ -20,10 +23,11 @@ public class EventController {
     private final EventMapper eventMapper;
 
     @PostMapping
-    public Mono<EventDto> create(@Validated(CreateEventGroup.class) @RequestBody EventDto eventDto) {
+    public Mono<EventStoreEvents> create(@Validated(CreateEventGroup.class) @RequestBody EventDto eventDto) {
         Event event = eventMapper.dtoToDomain(eventDto);
-        Mono<Event> eventMono = eventService.create(event);
-        return eventMapper.domainToDto(eventMono);
+        CreateEventCommand command = new CreateEventCommand(event, "Liza123");
+        Mono<EventStoreEvents> eventStoreMono = eventService.create(command);
+        return eventStoreMono; //TODO map to dto
     }
 
     @GetMapping
@@ -34,7 +38,10 @@ public class EventController {
 
     @GetMapping(value = "/user/{userId}")
     public Flux<EventDto> findByUserId(@PathVariable(name = "userId") Long userId) {
-        Flux<Event> eventFlux = eventService.findByUserId(userId);
+        ListEventQuery query = ListEventQuery.builder()
+                .userId(userId)
+                .build();
+        Flux<Event> eventFlux = eventService.findByUserId(query);
         return eventMapper.domainToDto(eventFlux);
     }
 
