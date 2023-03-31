@@ -8,7 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class CreateEventCommand {
 
-    private Event event;
-    private String commandBy;
+    private final Event event;
+    private final String commandBy;
 
 }

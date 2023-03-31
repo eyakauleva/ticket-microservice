@@ -13,8 +13,7 @@ public class Ticket {
 
     private String id;
     private Long userId;
-    private Long eventId;
-    private Event event;
+    private String eventId;
     private Integer quantity;
     private BigDecimal price;
 

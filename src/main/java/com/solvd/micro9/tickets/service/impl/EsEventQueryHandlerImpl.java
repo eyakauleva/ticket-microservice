@@ -3,24 +3,17 @@ package com.solvd.micro9.tickets.service.impl;
 import com.google.gson.Gson;
 import com.solvd.micro9.tickets.domain.Event;
 import com.solvd.micro9.tickets.domain.Ticket;
-import com.solvd.micro9.tickets.domain.command.CreateEventCommand;
-import com.solvd.micro9.tickets.domain.event.EventStoreEvents;
-import com.solvd.micro9.tickets.domain.event.EventType;
 import com.solvd.micro9.tickets.domain.query.ListEventQuery;
 import com.solvd.micro9.tickets.persistence.EventRepository;
 import com.solvd.micro9.tickets.persistence.TicketRepository;
-import com.solvd.micro9.tickets.service.EventService;
+import com.solvd.micro9.tickets.service.EsEventQueryHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class EventServiceImpl implements EventService {
+public class EsEventQueryHandlerImpl implements EsEventQueryHandler {
 
     private final EventRepository eventRepository;
     private final TicketRepository ticketRepository;
@@ -47,19 +40,6 @@ public class EventServiceImpl implements EventService {
                     event.setId(eventStore.getEntityId());
                     return event;
                 });
-    }
-
-    @Override
-    public Mono<EventStoreEvents> create(CreateEventCommand command) {
-        String payload = new Gson().toJson(command.getEvent());
-        EventStoreEvents event = EventStoreEvents.builder()
-                .type(EventType.EVENT_CREATED)
-                .time(LocalDateTime.now())
-                .createdBy(command.getCommandBy())
-                .entityId(UUID.randomUUID().toString())
-                .payload(payload)
-                .build();
-        return eventRepository.save(event);
     }
 
 }

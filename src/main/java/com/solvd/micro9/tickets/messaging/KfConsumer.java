@@ -1,7 +1,7 @@
 package com.solvd.micro9.tickets.messaging;
 
 import com.solvd.micro9.tickets.domain.command.SetTicketsUserIdToNullByUserIdCommand;
-import com.solvd.micro9.tickets.service.TicketService;
+import com.solvd.micro9.tickets.service.EsTicketCommandHandler;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class KfConsumer {
 
     private final ReactiveKafkaConsumerTemplate<String, Long> receiver;
-    private final TicketService ticketService;
+    private final EsTicketCommandHandler commandHandler;
 
     @PostConstruct
     public void fetch() {
@@ -22,10 +22,9 @@ public class KfConsumer {
                 .subscribe(record -> {
                     log.info("received message: {}", record);
                     SetTicketsUserIdToNullByUserIdCommand command = new SetTicketsUserIdToNullByUserIdCommand(
-                            record.value(),
-                            "Liza123"
+                            record.value()
                     );
-                    ticketService.updateDeletedUserTickets(command);
+                    commandHandler.apply(command);
                     record.receiverOffset().acknowledge();
                 });
     }

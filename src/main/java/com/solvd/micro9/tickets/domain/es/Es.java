@@ -1,4 +1,4 @@
-package com.solvd.micro9.tickets.domain.event;
+package com.solvd.micro9.tickets.domain.es;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class EventStore {
+public class Es {
 
     @Id
     private Long id;
 
-    private EventType type;
+    private EsEventType type;
 
     private LocalDateTime time;
 

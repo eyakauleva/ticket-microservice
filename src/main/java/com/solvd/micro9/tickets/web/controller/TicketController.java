@@ -2,9 +2,13 @@ package com.solvd.micro9.tickets.web.controller;
 
 import com.solvd.micro9.tickets.domain.Ticket;
 import com.solvd.micro9.tickets.domain.command.CreateTicketCommand;
-import com.solvd.micro9.tickets.domain.event.EventStoreTickets;
-import com.solvd.micro9.tickets.service.TicketService;
+import com.solvd.micro9.tickets.domain.command.SetTicketsUserIdToNullByUserIdCommand;
+import com.solvd.micro9.tickets.domain.es.EsTicket;
+import com.solvd.micro9.tickets.service.EsTicketCommandHandler;
+import com.solvd.micro9.tickets.service.EsTicketQueryHandler;
+import com.solvd.micro9.tickets.web.dto.EsDto;
 import com.solvd.micro9.tickets.web.dto.TicketDto;
+import com.solvd.micro9.tickets.web.mapper.EsMapper;
 import com.solvd.micro9.tickets.web.mapper.TicketMapper;
 import com.solvd.micro9.tickets.web.validation.CreateTicketGroup;
 import lombok.RequiredArgsConstructor;
@@ -18,21 +22,28 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class TicketController {
 
-    private final TicketService ticketService;
+    private final EsTicketCommandHandler commandHandler;
+    private final EsTicketQueryHandler queryHandler;
     private final TicketMapper ticketMapper;
+    private final EsMapper esMapper;
 
     @PostMapping
-    public Mono<EventStoreTickets> create(@Validated(CreateTicketGroup.class) @RequestBody TicketDto ticketDto) {
+    public Mono<EsDto> create(@Validated(CreateTicketGroup.class) @RequestBody TicketDto ticketDto) {
         Ticket ticket = ticketMapper.dtoToDomain(ticketDto);
         CreateTicketCommand command = new CreateTicketCommand(ticket, "Liza123");
-        Mono<EventStoreTickets> eventStoreMono = ticketService.create(command);
-        return eventStoreMono; //TODO
+        Mono<EsTicket> eventStoreMono = commandHandler.apply(command);
+        return esMapper.domainToDto(eventStoreMono);
     }
 
     @GetMapping
     public Flux<TicketDto> getAll() {
-        Flux<Ticket> tickets = ticketService.getAll();
+        Flux<Ticket> tickets = queryHandler.getAll();
         return ticketMapper.domainToDto(tickets);
+    }
+
+    @GetMapping("/{id}")
+    public Flux<EsTicket> get(@PathVariable("id") Long userId) {
+        return commandHandler.apply(new SetTicketsUserIdToNullByUserIdCommand(userId));
     }
 
 }

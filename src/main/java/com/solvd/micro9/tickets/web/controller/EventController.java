@@ -2,10 +2,13 @@ package com.solvd.micro9.tickets.web.controller;
 
 import com.solvd.micro9.tickets.domain.Event;
 import com.solvd.micro9.tickets.domain.command.CreateEventCommand;
-import com.solvd.micro9.tickets.domain.event.EventStoreEvents;
+import com.solvd.micro9.tickets.domain.es.EsEvent;
 import com.solvd.micro9.tickets.domain.query.ListEventQuery;
-import com.solvd.micro9.tickets.service.EventService;
+import com.solvd.micro9.tickets.service.EsEventCommandHandler;
+import com.solvd.micro9.tickets.service.EsEventQueryHandler;
+import com.solvd.micro9.tickets.web.dto.EsDto;
 import com.solvd.micro9.tickets.web.dto.EventDto;
+import com.solvd.micro9.tickets.web.mapper.EsMapper;
 import com.solvd.micro9.tickets.web.mapper.EventMapper;
 import com.solvd.micro9.tickets.web.validation.CreateEventGroup;
 import lombok.RequiredArgsConstructor;
@@ -19,20 +22,22 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class EventController {
 
-    private final EventService eventService;
+    private final EsEventCommandHandler commandHandler;
+    private final EsEventQueryHandler queryHandler;
     private final EventMapper eventMapper;
+    private final EsMapper esMapper;
 
     @PostMapping
-    public Mono<EventStoreEvents> create(@Validated(CreateEventGroup.class) @RequestBody EventDto eventDto) {
+    public Mono<EsDto> create(@Validated(CreateEventGroup.class) @RequestBody EventDto eventDto) {
         Event event = eventMapper.dtoToDomain(eventDto);
         CreateEventCommand command = new CreateEventCommand(event, "Liza123");
-        Mono<EventStoreEvents> eventStoreMono = eventService.create(command);
-        return eventStoreMono; //TODO map to dto
+        Mono<EsEvent> eventStoreMono = commandHandler.apply(command);
+        return esMapper.domainToDto(eventStoreMono);
     }
 
     @GetMapping
     public Flux<EventDto> getAll() {
-        Flux<Event> eventFlux = eventService.getAll();
+        Flux<Event> eventFlux = queryHandler.getAll();
         return eventMapper.domainToDto(eventFlux);
     }
 
@@ -41,7 +46,7 @@ public class EventController {
         ListEventQuery query = ListEventQuery.builder()
                 .userId(userId)
                 .build();
-        Flux<Event> eventFlux = eventService.findByUserId(query);
+        Flux<Event> eventFlux = queryHandler.findByUserId(query);
         return eventMapper.domainToDto(eventFlux);
     }
 

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class EventDto {
 
     @NotNull(groups = CreateTicketGroup.class, message = "Event's id must be set")
-    private Long id;
+    private String id;
 
     @NotNull(groups = CreateEventGroup.class, message = "Event's name must be set")
     private String name;
@@ -32,7 +32,7 @@ public class EventDto {
     @NotNull(groups = CreateEventGroup.class, message = "Event's price must be set")
     private BigDecimal price;
 
-    public EventDto(Long id) {
+    public EventDto(String id) {
         this.id = id;
     }
 

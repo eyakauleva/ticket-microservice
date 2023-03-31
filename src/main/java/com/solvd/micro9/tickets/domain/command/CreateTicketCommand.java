@@ -8,7 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class CreateTicketCommand {
 
-    private Ticket ticket;
-    private String commandBy;
+    private final Ticket ticket;
+    private final String commandBy;
 
 }

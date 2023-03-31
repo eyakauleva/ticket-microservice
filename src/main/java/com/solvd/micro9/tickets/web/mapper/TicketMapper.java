@@ -26,7 +26,7 @@ public interface TicketMapper {
     Ticket dtoToDomain(TicketDto ticketDto);
 
     @Named("getEventId")
-    static Long getEventId(EventDto event) {
+    static String getEventId(EventDto event) {
         return event.getId();
     }
 
