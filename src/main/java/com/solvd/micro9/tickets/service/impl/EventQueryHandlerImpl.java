@@ -24,8 +24,7 @@ public class EventQueryHandlerImpl implements EventQueryHandler {
 
     @Override
     public Flux<Event> findByUserId(ListEventQuery query) {
-        return ticketRepository.findAll()
-                .filter(ticket -> query.getUserId().equals(ticket.getUserId()))
+        return ticketRepository.findByUserId(query.getUserId())
                 .distinct(Ticket::getEventId)
                 .flatMap(ticket -> eventRepository.findById(ticket.getEventId()));
     }
