@@ -43,15 +43,18 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                 .payload(payload)
                 .build();
         return eventRepository.findByEntityId(command.getTicket().getEventId())
-                .switchIfEmpty(
-                        Mono.error(
-                                new ResourceDoesNotExistException(
-                                        "Event [id=" + command.getTicket().getEventId() + "] does not exist")
-                        )
-                )
+                .collectList()
+                .map(esEventsList -> {
+                    if (esEventsList.isEmpty()) {
+                        throw new ResourceDoesNotExistException(
+                                "Event [id=" + command.getTicket().getEventId() + "] does not exist"
+                        );
+                    } else {
+                        return esEventsList;
+                    }
+                })
                 .zipWith(ticketRepository.save(event))
                 .map(Tuple2::getT2);
-        //TODO check if event exists
     }
 
     @Transactional
