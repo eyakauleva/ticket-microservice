@@ -1,4 +1,4 @@
-package com.solvd.micro9.tickets.persistence;
+package com.solvd.micro9.tickets.persistence.eventstore;
 
 import com.solvd.micro9.tickets.domain.es.EsEvent;
 import org.springframework.data.mongodb.repository.Query;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
 @Repository
-public interface EventRepository extends ReactiveMongoRepository<EsEvent, Long> {
+public interface EsEventRepository extends ReactiveMongoRepository<EsEvent, Long> {
 
     @Query("{'entityId' : :#{#entityId}}")
     Flux<EsEvent> findByEntityId(@Param("entityId") String entityId);

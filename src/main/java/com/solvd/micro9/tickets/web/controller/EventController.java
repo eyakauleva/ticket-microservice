@@ -1,11 +1,11 @@
 package com.solvd.micro9.tickets.web.controller;
 
-import com.solvd.micro9.tickets.domain.Event;
+import com.solvd.micro9.tickets.domain.aggregate.Event;
 import com.solvd.micro9.tickets.domain.command.CreateEventCommand;
 import com.solvd.micro9.tickets.domain.es.EsEvent;
 import com.solvd.micro9.tickets.domain.query.ListEventQuery;
 import com.solvd.micro9.tickets.service.EsEventCommandHandler;
-import com.solvd.micro9.tickets.service.EsEventQueryHandler;
+import com.solvd.micro9.tickets.service.EventQueryHandler;
 import com.solvd.micro9.tickets.web.dto.EsDto;
 import com.solvd.micro9.tickets.web.dto.EventDto;
 import com.solvd.micro9.tickets.web.mapper.EsMapper;
@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 public class EventController {
 
     private final EsEventCommandHandler commandHandler;
-    private final EsEventQueryHandler queryHandler;
+    private final EventQueryHandler queryHandler;
     private final EventMapper eventMapper;
     private final EsMapper esMapper;
 

@@ -1,4 +1,4 @@
-package com.solvd.micro9.tickets.persistence;
+package com.solvd.micro9.tickets.persistence.eventstore;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

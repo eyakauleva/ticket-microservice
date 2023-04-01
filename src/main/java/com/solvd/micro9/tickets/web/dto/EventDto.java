@@ -1,6 +1,6 @@
 package com.solvd.micro9.tickets.web.dto;
 
-import com.solvd.micro9.tickets.domain.EventCategory;
+import com.solvd.micro9.tickets.domain.aggregate.EventCategory;
 import com.solvd.micro9.tickets.web.validation.CreateEventGroup;
 import com.solvd.micro9.tickets.web.validation.CreateTicketGroup;
 import jakarta.validation.constraints.NotNull;
@@ -31,9 +31,5 @@ public class EventDto {
 
     @NotNull(groups = CreateEventGroup.class, message = "Event's price must be set")
     private BigDecimal price;
-
-    public EventDto(String id) {
-        this.id = id;
-    }
 
 }

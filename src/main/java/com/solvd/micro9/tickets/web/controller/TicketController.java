@@ -1,11 +1,11 @@
 package com.solvd.micro9.tickets.web.controller;
 
-import com.solvd.micro9.tickets.domain.Ticket;
+import com.solvd.micro9.tickets.domain.aggregate.Ticket;
 import com.solvd.micro9.tickets.domain.command.CreateTicketCommand;
 import com.solvd.micro9.tickets.domain.command.SetTicketsUserIdToNullByUserIdCommand;
 import com.solvd.micro9.tickets.domain.es.EsTicket;
 import com.solvd.micro9.tickets.service.EsTicketCommandHandler;
-import com.solvd.micro9.tickets.service.EsTicketQueryHandler;
+import com.solvd.micro9.tickets.service.TicketQueryHandler;
 import com.solvd.micro9.tickets.web.dto.EsDto;
 import com.solvd.micro9.tickets.web.dto.TicketDto;
 import com.solvd.micro9.tickets.web.mapper.EsMapper;
@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 public class TicketController {
 
     private final EsTicketCommandHandler commandHandler;
-    private final EsTicketQueryHandler queryHandler;
+    private final TicketQueryHandler queryHandler;
     private final TicketMapper ticketMapper;
     private final EsMapper esMapper;
 

@@ -1,9 +1,9 @@
 package com.solvd.micro9.tickets.service;
 
-import com.solvd.micro9.tickets.domain.Ticket;
+import com.solvd.micro9.tickets.domain.aggregate.Ticket;
 import reactor.core.publisher.Flux;
 
-public interface EsTicketQueryHandler {
+public interface TicketQueryHandler {
 
     Flux<Ticket> getAll();
 

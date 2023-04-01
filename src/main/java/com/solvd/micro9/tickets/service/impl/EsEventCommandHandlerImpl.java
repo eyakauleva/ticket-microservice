@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.solvd.micro9.tickets.domain.command.CreateEventCommand;
 import com.solvd.micro9.tickets.domain.es.EsEvent;
 import com.solvd.micro9.tickets.domain.es.EsEventType;
-import com.solvd.micro9.tickets.persistence.EventRepository;
+import com.solvd.micro9.tickets.persistence.eventstore.EsEventRepository;
 import com.solvd.micro9.tickets.service.EsEventCommandHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EsEventCommandHandlerImpl implements EsEventCommandHandler {
 
-    private final EventRepository eventRepository;
+    private final EsEventRepository esEventRepository;
 
     @SneakyThrows
     @Override
@@ -39,7 +39,7 @@ public class EsEventCommandHandlerImpl implements EsEventCommandHandler {
                 .entityId(UUID.randomUUID().toString())
                 .payload(payload)
                 .build();
-        return eventRepository.save(event);
+        return esEventRepository.save(event);
     }
 
 }

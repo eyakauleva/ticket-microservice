@@ -1,6 +1,6 @@
 package com.solvd.micro9.tickets.domain.command;
 
-import com.solvd.micro9.tickets.domain.Ticket;
+import com.solvd.micro9.tickets.domain.aggregate.Ticket;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

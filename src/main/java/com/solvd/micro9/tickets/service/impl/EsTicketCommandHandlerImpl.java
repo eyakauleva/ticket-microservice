@@ -1,14 +1,14 @@
 package com.solvd.micro9.tickets.service.impl;
 
 import com.google.gson.Gson;
-import com.solvd.micro9.tickets.domain.Ticket;
+import com.solvd.micro9.tickets.domain.aggregate.Ticket;
 import com.solvd.micro9.tickets.domain.command.CreateTicketCommand;
 import com.solvd.micro9.tickets.domain.command.SetTicketsUserIdToNullByUserIdCommand;
 import com.solvd.micro9.tickets.domain.es.EsEventType;
 import com.solvd.micro9.tickets.domain.es.EsTicket;
 import com.solvd.micro9.tickets.domain.exception.ResourceDoesNotExistException;
-import com.solvd.micro9.tickets.persistence.EventRepository;
-import com.solvd.micro9.tickets.persistence.TicketRepository;
+import com.solvd.micro9.tickets.persistence.eventstore.EsEventRepository;
+import com.solvd.micro9.tickets.persistence.eventstore.EsTicketRepository;
 import com.solvd.micro9.tickets.service.EsTicketCommandHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +28,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
 
-    private final TicketRepository ticketRepository;
-    private final EventRepository eventRepository;
+    private final EsTicketRepository esTicketRepository;
+    private final EsEventRepository esEventRepository;
 
     @Transactional
     @Override
@@ -42,7 +42,7 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                 .entityId(UUID.randomUUID().toString())
                 .payload(payload)
                 .build();
-        return eventRepository.findByEntityId(command.getTicket().getEventId())
+        return esEventRepository.findByEntityId(command.getTicket().getEventId())
                 .collectList()
                 .map(esEventsList -> {
                     if (esEventsList.isEmpty()) {
@@ -53,7 +53,7 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                         return esEventsList;
                     }
                 })
-                .zipWith(ticketRepository.save(event))
+                .zipWith(esTicketRepository.save(event))
                 .map(Tuple2::getT2);
     }
 
@@ -63,7 +63,7 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
         String payload = "{\"userId\":null}";
         List<EsTicket> esTicketList = new ArrayList<>();
         final boolean[] isStreamCompleted = {false};
-        ticketRepository.findAll()
+        esTicketRepository.findAll()
                 .filter(esTicket -> {
                     Ticket ticket = new Gson().fromJson(esTicket.getPayload(), Ticket.class);
                     return command.getUserId().equals(ticket.getUserId());
@@ -84,7 +84,7 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
         while (!isStreamCompleted[0]) {
         } //TODO is there a better way to do?
 
-        return ticketRepository.saveAll(esTicketList); //TODO delete corresponding method from controller
+        return esTicketRepository.saveAll(esTicketList); //TODO delete corresponding method from controller
         //TODO                                       and make this method void
         //TODO                                      !!! DON'T FORGET TO ADD .subscribe() at the end !!!
     }
