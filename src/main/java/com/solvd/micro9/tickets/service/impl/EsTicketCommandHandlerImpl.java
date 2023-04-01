@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.solvd.micro9.tickets.domain.Ticket;
 import com.solvd.micro9.tickets.domain.command.CreateTicketCommand;
 import com.solvd.micro9.tickets.domain.command.SetTicketsUserIdToNullByUserIdCommand;
-import com.solvd.micro9.tickets.domain.es.EsEvent;
 import com.solvd.micro9.tickets.domain.es.EsEventType;
 import com.solvd.micro9.tickets.domain.es.EsTicket;
 import com.solvd.micro9.tickets.domain.exception.ResourceDoesNotExistException;
@@ -58,13 +57,15 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
     @Transactional
     @Override
     public Flux<EsTicket> apply(SetTicketsUserIdToNullByUserIdCommand command) {
-        Flux<EsTicket> esTicketFlux = ticketRepository.findAll()
+        String payload = "{\"userId\":null}";
+        List<EsTicket> esTicketList = new ArrayList<>();
+        final boolean[] isStreamCompleted = {false};
+        ticketRepository.findAll()
                 .filter(esTicket -> {
                     Ticket ticket = new Gson().fromJson(esTicket.getPayload(), Ticket.class);
                     return command.getUserId().equals(ticket.getUserId());
                 })
-                .map(esTicket -> {
-                    String payload = "{\"userId\":null}";
+                .doOnNext(esTicket -> {
                     EsTicket event = EsTicket.builder()
                             .type(EsEventType.TICKET_UPDATED)
                             .time(LocalDateTime.now())
@@ -72,18 +73,17 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                             .entityId(esTicket.getEntityId())
                             .payload(payload)
                             .build();
-                    log.info(event.toString());
-                    return event;
-//                    return ticketRepository.save(event);
-//                    ticketRepository.save(event);
-//                    EsTicket esTicket1 = ticketRepository.save(event).block();
-//                    log.info("res: " + esTicket1);//TODO not working
-                });
-        return Flux.empty()
-                .zipWith(ticketRepository.saveAll(esTicketFlux))
-                .map(Tuple2::getT2);
-//        return ticketRepository.saveAll(eventFlux);
-//        return Flux.empty();
+                    esTicketList.add(event);
+                })
+                .doOnComplete(() -> isStreamCompleted[0] = true)
+                .subscribe();
+
+        while (!isStreamCompleted[0]) {
+        } //TODO is there a better way to do?
+
+        return ticketRepository.saveAll(esTicketList); //TODO delete corresponding method from controller
+        //TODO                                       and make this method void
+        //TODO                                      !!! DON'T FORGET TO ADD .subscribe() at the end !!!
     }
 
 }
