@@ -14,7 +14,7 @@ import java.util.Collections;
 @Configuration
 public class KfConsumerConfig {
 
-    @Value("${spring.kafka.topic}")
+    @Value("${spring.kafka.consumer.topic}")
     private String topic;
 
     @Bean

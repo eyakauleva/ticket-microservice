@@ -41,6 +41,7 @@ public class TicketController {
         return ticketMapper.domainToDto(tickets);
     }
 
+    //TODO remove
     @GetMapping("/{id}")
     public Flux<EsTicket> get(@PathVariable("id") Long userId) {
         return commandHandler.apply(new SetTicketsUserIdToNullByUserIdCommand(userId));

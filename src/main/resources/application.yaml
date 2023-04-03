@@ -15,12 +15,16 @@ spring:
   data:
     mongodb:
       uri: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_DOMAIN}:27017/tickets?authSource=admin
+  r2dbc:
+    url: r2dbc:postgresql://${POSTGRES_DOMAIN}:5432/postgres?currentSchema=tickets_es
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver: org.postgresql.Driver
   jackson:
     default-property-inclusion: non_null
   application:
     name: TICKET-SERVICE
   kafka:
-    topic: users
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}:9092
     properties:
       spring:
@@ -28,6 +32,13 @@ spring:
           trusted:
             packages: com.solvd.micro9.tickets.web.dto
     consumer:
+      topic: users
       group-id: userGroup
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    partitions: 3
+    replicas: 1
+    producer:
+      topic: events
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

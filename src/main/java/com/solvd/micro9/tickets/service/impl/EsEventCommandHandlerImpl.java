@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.solvd.micro9.tickets.domain.command.CreateEventCommand;
 import com.solvd.micro9.tickets.domain.es.EsEvent;
 import com.solvd.micro9.tickets.domain.es.EsEventType;
+import com.solvd.micro9.tickets.messaging.KfProducer;
 import com.solvd.micro9.tickets.persistence.eventstore.EsEventRepository;
 import com.solvd.micro9.tickets.service.EsEventCommandHandler;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class EsEventCommandHandlerImpl implements EsEventCommandHandler {
 
     private final EsEventRepository esEventRepository;
+    private final KfProducer producer;
 
     @SneakyThrows
     @Override
@@ -31,7 +33,6 @@ public class EsEventCommandHandlerImpl implements EsEventCommandHandler {
         mapper.setDateFormat(dateFormat);
         String payload = mapper.writeValueAsString(command.getEvent());
 
-
         EsEvent event = EsEvent.builder()
                 .type(EsEventType.EVENT_CREATED)
                 .time(LocalDateTime.now())
@@ -39,7 +40,9 @@ public class EsEventCommandHandlerImpl implements EsEventCommandHandler {
                 .entityId(UUID.randomUUID().toString())
                 .payload(payload)
                 .build();
-        return esEventRepository.save(event);
+
+        return esEventRepository.save(event)
+                .doOnSuccess(esEvent -> producer.send("New event", esEvent));
     }
 
 }

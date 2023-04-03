@@ -7,6 +7,7 @@ import com.solvd.micro9.tickets.domain.command.SetTicketsUserIdToNullByUserIdCom
 import com.solvd.micro9.tickets.domain.es.EsEventType;
 import com.solvd.micro9.tickets.domain.es.EsTicket;
 import com.solvd.micro9.tickets.domain.exception.ResourceDoesNotExistException;
+import com.solvd.micro9.tickets.messaging.KfProducer;
 import com.solvd.micro9.tickets.persistence.eventstore.EsEventRepository;
 import com.solvd.micro9.tickets.persistence.eventstore.EsTicketRepository;
 import com.solvd.micro9.tickets.service.EsTicketCommandHandler;
@@ -28,8 +29,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
 
+    public static final String TICKET_USER_ID_TO_NULL_PAYLOAD = "{\"userId\":null}";
     private final EsTicketRepository esTicketRepository;
     private final EsEventRepository esEventRepository;
+    private final KfProducer producer;
 
     @Transactional
     @Override
@@ -42,6 +45,7 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                 .entityId(UUID.randomUUID().toString())
                 .payload(payload)
                 .build();
+
         return esEventRepository.findByEntityId(command.getTicket().getEventId())
                 .collectList()
                 .map(esEventsList -> {
@@ -54,15 +58,16 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                     }
                 })
                 .zipWith(esTicketRepository.save(event))
-                .map(Tuple2::getT2);
+                .map(Tuple2::getT2)
+                .doOnSuccess(esTicket -> producer.send("New event", esTicket));
     }
 
     @Transactional
     @Override
     public Flux<EsTicket> apply(SetTicketsUserIdToNullByUserIdCommand command) {
-        String payload = "{\"userId\":null}";
         List<EsTicket> esTicketList = new ArrayList<>();
         final boolean[] isStreamCompleted = {false};
+
         esTicketRepository.findAll()
                 .filter(esTicket -> {
                     Ticket ticket = new Gson().fromJson(esTicket.getPayload(), Ticket.class);
@@ -74,7 +79,7 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                             .time(LocalDateTime.now())
                             .createdBy(command.getCommandBy())
                             .entityId(esTicket.getEntityId())
-                            .payload(payload)
+                            .payload(TICKET_USER_ID_TO_NULL_PAYLOAD)
                             .build();
                     esTicketList.add(event);
                 })
@@ -84,9 +89,14 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
         while (!isStreamCompleted[0]) {
         } //TODO is there a better way to do?
 
-        return esTicketRepository.saveAll(esTicketList); //TODO delete corresponding method from controller
-        //TODO                                       and make this method void
-        //TODO                                      !!! DON'T FORGET TO ADD .subscribe() at the end !!!
+        return Flux.fromIterable(esTicketList)
+                .flatMap(esTicket -> esTicketRepository.save(esTicket)
+                        .doOnSuccess(esTicket1 -> producer.send("New event", esTicket1))
+                );
+
+        //TODO  delete corresponding method from controller
+        //TODO  and make this method void
+        //TODO  !!! DON'T FORGET TO ADD .subscribe() at the end !!!
     }
 
 }
