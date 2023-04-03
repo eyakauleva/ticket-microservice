@@ -62,9 +62,8 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                 .doOnSuccess(esTicket -> producer.send("New event", esTicket));
     }
 
-    @Transactional
     @Override
-    public Flux<EsTicket> apply(SetTicketsUserIdToNullByUserIdCommand command) {
+    public void apply(SetTicketsUserIdToNullByUserIdCommand command) {
         List<EsTicket> esTicketList = new ArrayList<>();
         final boolean[] isStreamCompleted = {false};
 
@@ -89,14 +88,11 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
         while (!isStreamCompleted[0]) {
         } //TODO is there a better way to do?
 
-        return Flux.fromIterable(esTicketList)
+        Flux.fromIterable(esTicketList)
                 .flatMap(esTicket -> esTicketRepository.save(esTicket)
-                        .doOnSuccess(esTicket1 -> producer.send("New event", esTicket1))
-                );
-
-        //TODO  delete corresponding method from controller
-        //TODO  and make this method void
-        //TODO  !!! DON'T FORGET TO ADD .subscribe() at the end !!!
+                        .doOnSuccess(event -> producer.send("New event", event))
+                )
+                .subscribe();
     }
 
 }

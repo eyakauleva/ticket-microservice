@@ -2,7 +2,6 @@ package com.solvd.micro9.tickets.web.controller;
 
 import com.solvd.micro9.tickets.domain.aggregate.Ticket;
 import com.solvd.micro9.tickets.domain.command.CreateTicketCommand;
-import com.solvd.micro9.tickets.domain.command.SetTicketsUserIdToNullByUserIdCommand;
 import com.solvd.micro9.tickets.domain.es.EsTicket;
 import com.solvd.micro9.tickets.service.EsTicketCommandHandler;
 import com.solvd.micro9.tickets.service.TicketQueryHandler;
@@ -39,12 +38,6 @@ public class TicketController {
     public Flux<TicketDto> getAll() {
         Flux<Ticket> tickets = queryHandler.getAll();
         return ticketMapper.domainToDto(tickets);
-    }
-
-    //TODO remove
-    @GetMapping("/{id}")
-    public Flux<EsTicket> get(@PathVariable("id") Long userId) {
-        return commandHandler.apply(new SetTicketsUserIdToNullByUserIdCommand(userId));
     }
 
 }
