@@ -20,7 +20,7 @@ public class KfConsumer {
     public void fetch() {
         receiver.receive()
                 .subscribe(record -> {
-                    log.info("received message: {}", record);
+                    log.info("received value: {}", record.value());
                     SetTicketsUserIdToNullByUserIdCommand command = new SetTicketsUserIdToNullByUserIdCommand(
                             record.value()
                     );
