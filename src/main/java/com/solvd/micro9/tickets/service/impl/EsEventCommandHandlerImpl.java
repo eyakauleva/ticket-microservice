@@ -32,7 +32,6 @@ public class EsEventCommandHandlerImpl implements EsEventCommandHandler {
         mapper.registerModule(new JavaTimeModule());
         mapper.setDateFormat(dateFormat);
         String payload = mapper.writeValueAsString(command.getEvent());
-
         EsEvent event = EsEvent.builder()
                 .type(EsEventType.EVENT_CREATED)
                 .time(LocalDateTime.now())
@@ -40,7 +39,6 @@ public class EsEventCommandHandlerImpl implements EsEventCommandHandler {
                 .entityId(UUID.randomUUID().toString())
                 .payload(payload)
                 .build();
-
         return esEventRepository.save(event)
                 .doOnSuccess(esEvent -> producer.send("New event", esEvent));
     }

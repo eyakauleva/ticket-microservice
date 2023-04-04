@@ -7,6 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
+/**
+ * Es (event store) is a base class for event sourcing events
+ */
+
 @Data
 @AllArgsConstructor
 public class Es {

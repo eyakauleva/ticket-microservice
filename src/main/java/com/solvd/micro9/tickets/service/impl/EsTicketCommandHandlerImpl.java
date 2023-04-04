@@ -44,7 +44,6 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                 .entityId(UUID.randomUUID().toString())
                 .payload(payload)
                 .build();
-
         return esEventRepository.findByEntityId(command.getTicket().getEventId())
                 .collectList()
                 .map(esEventsList -> {
@@ -65,7 +64,6 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
     public void apply(SetTicketsUserIdToNullByUserIdCommand command) {
         List<EsTicket> esTicketList = new ArrayList<>();
         final boolean[] isStreamCompleted = {false};
-
         esTicketRepository.findAll()
                 .filter(esTicket -> {
                     Ticket ticket = new Gson().fromJson(esTicket.getPayload(), Ticket.class);
