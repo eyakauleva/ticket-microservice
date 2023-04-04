@@ -29,7 +29,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
 
-    public static final String TICKET_USER_ID_TO_NULL_PAYLOAD = "{\"userId\":null}";
     private final EsTicketRepository esTicketRepository;
     private final EsEventRepository esEventRepository;
     private final KfProducer producer;
@@ -70,15 +69,15 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
         esTicketRepository.findAll()
                 .filter(esTicket -> {
                     Ticket ticket = new Gson().fromJson(esTicket.getPayload(), Ticket.class);
-                    return command.getUserId().equals(ticket.getUserId());
+                    return esTicket.getType().equals(EsEventType.TICKET_CREATED)
+                            && command.getUserId().equals(ticket.getUserId());
                 })
                 .doOnNext(esTicket -> {
                     EsTicket event = EsTicket.builder()
-                            .type(EsEventType.TICKET_UPDATED)
+                            .type(EsEventType.TICKET_USER_DELETED)
                             .time(LocalDateTime.now())
                             .createdBy(command.getCommandBy())
                             .entityId(esTicket.getEntityId())
-                            .payload(TICKET_USER_ID_TO_NULL_PAYLOAD)
                             .build();
                     esTicketList.add(event);
                 })
