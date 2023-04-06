@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.solvd.micro9.tickets.domain.aggregate.Ticket;
 import com.solvd.micro9.tickets.domain.command.CreateTicketCommand;
 import com.solvd.micro9.tickets.domain.command.SetTicketsUserIdToNullByUserIdCommand;
-import com.solvd.micro9.tickets.domain.es.EsEventType;
+import com.solvd.micro9.tickets.domain.es.EsType;
 import com.solvd.micro9.tickets.domain.es.EsTicket;
 import com.solvd.micro9.tickets.domain.exception.ResourceDoesNotExistException;
 import com.solvd.micro9.tickets.messaging.KfProducer;
@@ -38,7 +38,7 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
     public Mono<EsTicket> apply(CreateTicketCommand command) {
         String payload = new Gson().toJson(command.getTicket());
         EsTicket event = EsTicket.builder()
-                .type(EsEventType.TICKET_CREATED)
+                .type(EsType.TICKET_CREATED)
                 .time(LocalDateTime.now())
                 .createdBy(command.getCommandBy())
                 .entityId(UUID.randomUUID().toString())
@@ -67,12 +67,12 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
         esTicketRepository.findAll()
                 .filter(esTicket -> {
                     Ticket ticket = new Gson().fromJson(esTicket.getPayload(), Ticket.class);
-                    return esTicket.getType().equals(EsEventType.TICKET_CREATED)
+                    return esTicket.getType().equals(EsType.TICKET_CREATED)
                             && command.getUserId().equals(ticket.getUserId());
                 })
                 .doOnNext(esTicket -> {
                     EsTicket event = EsTicket.builder()
-                            .type(EsEventType.TICKET_USER_DELETED)
+                            .type(EsType.TICKET_USER_DELETED)
                             .time(LocalDateTime.now())
                             .createdBy(command.getCommandBy())
                             .entityId(esTicket.getEntityId())

@@ -42,7 +42,7 @@ public class EventController {
     }
 
     @GetMapping(value = "/user/{userId}")
-    public Flux<EventDto> findByUserId(@PathVariable(name = "userId") Long userId) {
+    public Flux<EventDto> findByUserId(@PathVariable(name = "userId") String userId) {
         ListEventQuery query = ListEventQuery.builder()
                 .userId(userId)
                 .build();

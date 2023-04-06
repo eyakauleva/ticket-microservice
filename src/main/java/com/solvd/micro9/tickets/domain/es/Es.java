@@ -2,6 +2,7 @@ package com.solvd.micro9.tickets.domain.es;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -12,13 +13,14 @@ import java.time.LocalDateTime;
  */
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class Es {
 
     @Id
     private Long id;
 
-    private EsEventType type;
+    private EsType type;
 
     private LocalDateTime time;
 

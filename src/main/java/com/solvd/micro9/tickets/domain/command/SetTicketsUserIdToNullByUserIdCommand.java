@@ -7,10 +7,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class SetTicketsUserIdToNullByUserIdCommand {
 
-    private final Long userId;
+    private final String userId;
     private final String commandBy;
 
-    public SetTicketsUserIdToNullByUserIdCommand(Long userId) {
+    public SetTicketsUserIdToNullByUserIdCommand(String userId) {
         this.userId = userId;
         this.commandBy = null;
     }

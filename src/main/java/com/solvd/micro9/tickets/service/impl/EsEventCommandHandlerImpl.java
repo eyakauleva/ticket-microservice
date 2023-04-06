@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.solvd.micro9.tickets.domain.command.CreateEventCommand;
 import com.solvd.micro9.tickets.domain.es.EsEvent;
-import com.solvd.micro9.tickets.domain.es.EsEventType;
+import com.solvd.micro9.tickets.domain.es.EsType;
 import com.solvd.micro9.tickets.messaging.KfProducer;
 import com.solvd.micro9.tickets.persistence.eventstore.EsEventRepository;
 import com.solvd.micro9.tickets.service.EsEventCommandHandler;
@@ -33,7 +33,7 @@ public class EsEventCommandHandlerImpl implements EsEventCommandHandler {
         mapper.setDateFormat(dateFormat);
         String payload = mapper.writeValueAsString(command.getEvent());
         EsEvent event = EsEvent.builder()
-                .type(EsEventType.EVENT_CREATED)
+                .type(EsType.EVENT_CREATED)
                 .time(LocalDateTime.now())
                 .createdBy(command.getCommandBy())
                 .entityId(UUID.randomUUID().toString())

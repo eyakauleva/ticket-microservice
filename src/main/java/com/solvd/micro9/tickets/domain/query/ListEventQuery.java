@@ -7,6 +7,6 @@ import lombok.Data;
 @Builder
 public class ListEventQuery {
 
-    private Long userId;
+    private String userId;
 
 }

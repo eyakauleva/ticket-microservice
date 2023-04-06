@@ -15,7 +15,7 @@ public class TicketDto {
     private String id;
 
     @NotNull(groups = CreateTicketGroup.class, message = "Ticket must refer to a client")
-    private Long userId;
+    private String userId;
 
     @NotNull(groups = CreateTicketGroup.class, message = "Ticket's event must be set")
     @Valid

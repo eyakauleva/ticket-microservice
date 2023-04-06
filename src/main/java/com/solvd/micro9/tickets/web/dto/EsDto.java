@@ -1,6 +1,6 @@
 package com.solvd.micro9.tickets.web.dto;
 
-import com.solvd.micro9.tickets.domain.es.EsEventType;
+import com.solvd.micro9.tickets.domain.es.EsType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class EsDto {
 
     private Long id;
-    private EsEventType type;
+    private EsType type;
     private LocalDateTime time;
     private String createdBy;
     private String entityId;

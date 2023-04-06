@@ -19,7 +19,7 @@ public class Ticket {
     private String id;
 
     @Column("user_id")
-    private Long userId;
+    private String userId;
 
     @Column("event_id")
     private String eventId;

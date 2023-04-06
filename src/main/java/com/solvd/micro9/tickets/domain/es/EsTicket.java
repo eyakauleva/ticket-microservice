@@ -17,7 +17,7 @@ public class EsTicket extends Es {
 
     @Builder
     public EsTicket(Long id,
-                    EsEventType type,
+                    EsType type,
                     LocalDateTime time,
                     String createdBy,
                     String entityId,

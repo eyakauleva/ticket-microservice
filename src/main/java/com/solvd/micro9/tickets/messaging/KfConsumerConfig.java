@@ -1,5 +1,6 @@
 package com.solvd.micro9.tickets.messaging;
 
+import com.solvd.micro9.tickets.domain.es.Es;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -18,15 +19,15 @@ public class KfConsumerConfig {
     private String topic;
 
     @Bean
-    public ReceiverOptions<String, Long> receiverOptions(KafkaProperties kafkaProperties) {
-        ReceiverOptions<String, Long> basicReceiverOptions = ReceiverOptions.create(kafkaProperties.buildConsumerProperties());
+    public ReceiverOptions<String, Es> receiverOptions(KafkaProperties kafkaProperties) {
+        ReceiverOptions<String, Es> basicReceiverOptions = ReceiverOptions.create(kafkaProperties.buildConsumerProperties());
         return basicReceiverOptions.subscription(Collections.singletonList(topic))
                 .addAssignListener(receiverPartitions -> log.info("AssignListener: {}", receiverPartitions))
                 .addRevokeListener(receiverPartitions -> log.info("RevokeListener: {}", receiverPartitions));
     }
 
     @Bean
-    public ReactiveKafkaConsumerTemplate<String, Long> consumer(ReceiverOptions<String, Long> receiverOptions) {
+    public ReactiveKafkaConsumerTemplate<String, Es> consumer(ReceiverOptions<String, Es> receiverOptions) {
         return new ReactiveKafkaConsumerTemplate<>(receiverOptions);
     }
 

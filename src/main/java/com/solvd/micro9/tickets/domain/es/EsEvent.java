@@ -20,7 +20,7 @@ public class EsEvent extends Es {
 
     @Builder
     public EsEvent(Long id,
-                   EsEventType type,
+                   EsType type,
                    LocalDateTime time,
                    String createdBy,
                    String entityId,

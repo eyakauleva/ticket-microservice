@@ -1,6 +1,7 @@
 package com.solvd.micro9.tickets.messaging;
 
 import com.solvd.micro9.tickets.domain.command.SetTicketsUserIdToNullByUserIdCommand;
+import com.solvd.micro9.tickets.domain.es.Es;
 import com.solvd.micro9.tickets.service.EsTicketCommandHandler;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KfConsumer {
 
-    private final ReactiveKafkaConsumerTemplate<String, Long> receiver;
+    private final ReactiveKafkaConsumerTemplate<String, Es> receiver;
     private final EsTicketCommandHandler commandHandler;
 
     @PostConstruct
@@ -22,7 +23,7 @@ public class KfConsumer {
                 .subscribe(record -> {
                     log.info("received value: {}", record.value());
                     SetTicketsUserIdToNullByUserIdCommand command = new SetTicketsUserIdToNullByUserIdCommand(
-                            record.value()
+                            record.value().getEntityId()
                     );
                     commandHandler.apply(command);
                     record.receiverOffset().acknowledge();
