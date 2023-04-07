@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.solvd.micro9.tickets.domain.command.CreateEventCommand;
 import com.solvd.micro9.tickets.domain.es.EsEvent;
+import com.solvd.micro9.tickets.domain.es.EsStatus;
 import com.solvd.micro9.tickets.domain.es.EsType;
 import com.solvd.micro9.tickets.messaging.KfProducer;
 import com.solvd.micro9.tickets.persistence.eventstore.EsEventRepository;
@@ -38,6 +39,7 @@ public class EsEventCommandHandlerImpl implements EsEventCommandHandler {
                 .createdBy(command.getCommandBy())
                 .entityId(UUID.randomUUID().toString())
                 .payload(payload)
+                .status(EsStatus.SUBMITTED)
                 .build();
         return esEventRepository.save(event)
                 .doOnSuccess(esEvent -> producer.send("New event", esEvent));
