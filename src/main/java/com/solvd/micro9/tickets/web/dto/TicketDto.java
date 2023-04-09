@@ -12,10 +12,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class TicketDto {
 
-    private Long id;
+    private String id;
 
     @NotNull(groups = CreateTicketGroup.class, message = "Ticket must refer to a client")
-    private Long userId;
+    private String userId;
 
     @NotNull(groups = CreateTicketGroup.class, message = "Ticket's event must be set")
     @Valid

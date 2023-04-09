@@ -1,6 +1,6 @@
 package com.solvd.micro9.tickets.service.impl;
 
-import com.solvd.micro9.tickets.persistence.DatabaseSequence;
+import com.solvd.micro9.tickets.persistence.eventstore.DatabaseSequence;
 import com.solvd.micro9.tickets.service.SequenceGeneratorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;

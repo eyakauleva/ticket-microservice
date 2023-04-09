@@ -1,6 +1,6 @@
-package com.solvd.micro9.tickets.persistence.listener;
+package com.solvd.micro9.tickets.persistence.eventstore.listener;
 
-import com.solvd.micro9.tickets.domain.Ticket;
+import com.solvd.micro9.tickets.domain.es.EsEvent;
 import com.solvd.micro9.tickets.domain.exception.ServerException;
 import com.solvd.micro9.tickets.service.SequenceGeneratorService;
 import lombok.RequiredArgsConstructor;
@@ -13,15 +13,15 @@ import java.util.concurrent.ExecutionException;
 
 @Component
 @RequiredArgsConstructor
-public class TicketListener extends AbstractMongoEventListener<Ticket> {
+public class EsEventListener extends AbstractMongoEventListener<EsEvent> {
 
     private final SequenceGeneratorService sequenceGenerator;
 
     @Override
-    public void onBeforeConvert(BeforeConvertEvent<Ticket> ticket) {
+    public void onBeforeConvert(BeforeConvertEvent<EsEvent> event) {
         try {
-            if (Objects.isNull(ticket.getSource().getId())) {
-                ticket.getSource().setId(sequenceGenerator.generateSequence(Ticket.SEQUENCE_NAME));
+            if (Objects.isNull(event.getSource().getId())) {
+                event.getSource().setId(sequenceGenerator.generateSequence(EsEvent.SEQUENCE_NAME));
             }
         } catch (InterruptedException | ExecutionException e) {
             throw new ServerException(e);
@@ -29,3 +29,4 @@ public class TicketListener extends AbstractMongoEventListener<Ticket> {
     }
 
 }
+
