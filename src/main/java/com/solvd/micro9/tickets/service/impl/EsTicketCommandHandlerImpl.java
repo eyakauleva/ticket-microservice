@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.solvd.micro9.tickets.domain.aggregate.Ticket;
 import com.solvd.micro9.tickets.domain.cache.TicketCache;
 import com.solvd.micro9.tickets.domain.command.CreateTicketCommand;
+import com.solvd.micro9.tickets.domain.command.DeleteTicketsUserByUserIdCommand;
 import com.solvd.micro9.tickets.domain.command.ProcessTicketUpdateCommand;
-import com.solvd.micro9.tickets.domain.command.SetTicketsUserIdToNullByUserIdCommand;
 import com.solvd.micro9.tickets.domain.es.EsStatus;
 import com.solvd.micro9.tickets.domain.es.EsTicket;
 import com.solvd.micro9.tickets.domain.es.EsType;
@@ -81,7 +81,7 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
     }
 
     @Override
-    public void apply(SetTicketsUserIdToNullByUserIdCommand command) {
+    public void apply(DeleteTicketsUserByUserIdCommand command) {
         List<EsTicket> esTicketList = new ArrayList<>();
         final boolean[] isStreamCompleted = {false};
         esTicketRepository.findAll()
@@ -105,10 +105,8 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                 .doOnComplete(() -> isStreamCompleted[0] = true)
                 .subscribeOn(Schedulers.boundedElastic())
                 .subscribe();
-
         while (!isStreamCompleted[0]) {
         } //TODO is there a better way to do?
-
         Flux.fromIterable(esTicketList)
                 .flatMap(esTicket -> esTicketRepository.save(esTicket)
                         .doOnSuccess(event -> {
