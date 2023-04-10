@@ -32,4 +32,6 @@ public class Es {
 
     private String payload;
 
+    private EsStatus status;
+
 }

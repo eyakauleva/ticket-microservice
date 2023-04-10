@@ -15,6 +15,10 @@ spring:
   data:
     mongodb:
       uri: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_DOMAIN}:27017/tickets?authSource=admin
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+      password: ${REDIS_PASSWORD}
   r2dbc:
     url: r2dbc:postgresql://${POSTGRES_DOMAIN}:5432/postgres?currentSchema=tickets_es
     username: ${POSTGRES_USER}
@@ -33,7 +37,7 @@ spring:
             packages: com.solvd.micro9.tickets.web.dto
     consumer:
       topic: users
-      group-id: userGroup
+      group-id: ticketGroup
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:

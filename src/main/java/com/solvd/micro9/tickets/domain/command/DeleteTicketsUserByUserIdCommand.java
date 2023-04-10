@@ -5,12 +5,12 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SetTicketsUserIdToNullByUserIdCommand {
+public class DeleteTicketsUserByUserIdCommand {
 
     private final String userId;
     private final String commandBy;
 
-    public SetTicketsUserIdToNullByUserIdCommand(String userId) {
+    public DeleteTicketsUserByUserIdCommand(String userId) {
         this.userId = userId;
         this.commandBy = null;
     }

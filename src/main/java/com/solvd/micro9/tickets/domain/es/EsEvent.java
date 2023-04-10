@@ -24,8 +24,9 @@ public class EsEvent extends Es {
                    LocalDateTime time,
                    String createdBy,
                    String entityId,
-                   String payload) {
-        super(id, type, time, createdBy, entityId, payload);
+                   String payload,
+                   EsStatus status) {
+        super(id, type, time, createdBy, entityId, payload, status);
     }
 
 }
