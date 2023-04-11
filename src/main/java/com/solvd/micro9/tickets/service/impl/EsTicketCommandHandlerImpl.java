@@ -13,6 +13,7 @@ import com.solvd.micro9.tickets.domain.exception.ResourceDoesNotExistException;
 import com.solvd.micro9.tickets.messaging.KfProducer;
 import com.solvd.micro9.tickets.persistence.eventstore.EsEventRepository;
 import com.solvd.micro9.tickets.persistence.eventstore.EsTicketRepository;
+import com.solvd.micro9.tickets.service.DbsSynchronizer;
 import com.solvd.micro9.tickets.service.EsTicketCommandHandler;
 import com.solvd.micro9.tickets.service.cache.RedisConfig;
 import jakarta.annotation.PreDestroy;
@@ -40,16 +41,19 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
     private final EsEventRepository esEventRepository;
     private final KfProducer producer;
     private final ReactiveHashOperations<String, Long, TicketCache> cache;
+    private final DbsSynchronizer synchronizer;
 
     @Autowired
     public EsTicketCommandHandlerImpl(EsTicketRepository esTicketRepository,
                                       EsEventRepository esEventRepository,
                                       KfProducer producer,
-                                      final ReactiveRedisOperations<String, TicketCache> operations) {
+                                      final ReactiveRedisOperations<String, TicketCache> operations,
+                                      DbsSynchronizer synchronizer) {
         this.esTicketRepository = esTicketRepository;
         this.esEventRepository = esEventRepository;
         this.producer = producer;
         this.cache = operations.opsForHash();
+        this.synchronizer = synchronizer;
     }
 
     @Transactional
@@ -77,7 +81,7 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                 })
                 .zipWith(esTicketRepository.save(event))
                 .map(Tuple2::getT2)
-                .doOnSuccess(esTicket -> producer.send("New event", esTicket));
+                .doOnSuccess(synchronizer::sync);
     }
 
     @Override
@@ -118,6 +122,7 @@ public class EsTicketCommandHandlerImpl implements EsTicketCommandHandler {
                                     .subscribeOn(Schedulers.boundedElastic())
                                     .subscribe();
                             producer.send("New event", event);
+                            synchronizer.sync(event);
                         })
                 )
                 .subscribeOn(Schedulers.boundedElastic())
