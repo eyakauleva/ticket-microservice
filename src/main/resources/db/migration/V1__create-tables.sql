@@ -1,7 +1,7 @@
 
 create table events
 (
-    id bigserial,
+    id varchar(45),
 	name varchar(100) not null,
 	description varchar(1000) not null,
 	category varchar(45) not null,
@@ -11,9 +11,9 @@ create table events
 );
 
 create table tickets(
-	id bigserial,
-	user_id bigint null,
-	event_id bigint not null,
+	id varchar(45),
+	user_id varchar(45) null,
+	event_id varchar(45) not null,
 	quantity int not null,
 	price decimal(10, 2) not null,
 	primary key (id),
