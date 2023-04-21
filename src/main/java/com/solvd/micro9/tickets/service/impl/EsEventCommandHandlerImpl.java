@@ -6,8 +6,8 @@ import com.solvd.micro9.tickets.domain.command.CreateEventCommand;
 import com.solvd.micro9.tickets.domain.es.EsEvent;
 import com.solvd.micro9.tickets.domain.es.EsStatus;
 import com.solvd.micro9.tickets.domain.es.EsType;
-import com.solvd.micro9.tickets.messaging.KfProducer;
 import com.solvd.micro9.tickets.persistence.eventstore.EsEventRepository;
+import com.solvd.micro9.tickets.service.DbsSynchronizer;
 import com.solvd.micro9.tickets.service.EsEventCommandHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -23,7 +23,7 @@ import java.util.UUID;
 public class EsEventCommandHandlerImpl implements EsEventCommandHandler {
 
     private final EsEventRepository esEventRepository;
-    private final KfProducer producer;
+    private final DbsSynchronizer synchronizer;
 
     @SneakyThrows
     @Override
@@ -42,7 +42,7 @@ public class EsEventCommandHandlerImpl implements EsEventCommandHandler {
                 .status(EsStatus.SUBMITTED)
                 .build();
         return esEventRepository.save(event)
-                .doOnSuccess(esEvent -> producer.send("New event", esEvent));
+                .doOnSuccess(synchronizer::sync);
     }
 
 }
